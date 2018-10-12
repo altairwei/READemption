@@ -1,5 +1,5 @@
 import concurrent.futures
-import os
+import os, shutil
 import sys
 import json
 from reademptionlib.bammerger import BamMerger
@@ -331,6 +331,10 @@ class Controller(object):
                 if not self._file_needs_to_be_created(
                         processed_read_path):
                     continue
+                if self._args.skip_read_process:
+                    # 仅仅拷贝并重命名输入文件，并重命名为单端测序文件
+                    shutil.copy(read_path, processed_read_path)
+                    continue
                 read_processor = ReadProcessor(
                     poly_a_clipping=self._args.poly_a_clipping,
                     min_read_length=self._args.min_read_length,
@@ -350,9 +354,14 @@ class Controller(object):
             for lib_name, read_path_pair, processed_read_path_pair in zip(
                 self._lib_names, self._paths.read_path_pairs,
                     self._paths.processed_read_path_pairs):
-                for processed_read_path in processed_read_path_pair:
+                for read_path, processed_read_path in zip(
+                    read_path_pair, processed_read_path_pair):
                     if not self._file_needs_to_be_created(
                             processed_read_path):
+                        continue
+                    if self._args.skip_read_process:
+                        # 仅仅拷贝并重命名输入文件，并重命名为双端文件
+                        shutil.copy(read_path, processed_read_path)
                         continue
                     read_processor = ReadProcessor(
                         poly_a_clipping=False,
