@@ -68,6 +68,35 @@ class Controller(object):
         self._ref_seq_files = self._paths.get_ref_seq_files()
         self._paths.set_ref_seq_paths(self._ref_seq_files)
         self._test_align_file_existance()
+        if self._args.regenerate_align_stats:
+            # Only re-generate alignment stats
+            if not self._args.paired_end:
+                self._read_files = self._paths.get_read_files()
+                self._lib_names = self._paths.get_lib_names_single_end()
+                self._paths.set_read_files_dep_file_lists_single_end(
+                    self._read_files, self._lib_names)
+            else:
+                self._read_file_pairs = self._paths.get_read_file_pairs()
+                self._lib_names = self._paths.get_lib_names_paired_end()
+                self._paths.set_read_files_dep_file_lists_paired_end(
+                    self._read_file_pairs, self._lib_names)
+            self._generate_read_alignment_stats(
+                self._lib_names,
+                self._paths.primary_read_aligner_bam_paths,
+                self._paths.unaligned_reads_paths,
+                self._paths.primary_read_aligner_stats_path)
+            final_unaligned_reads_paths = self._paths.unaligned_reads_paths
+            if not len(self._paths.realigned_unaligned_reads_paths) == 0:
+                final_unaligned_reads_paths = (
+                    self._paths.realigned_unaligned_reads_paths)
+            self._generate_read_alignment_stats(
+                self._lib_names,
+                self._paths.read_alignment_bam_paths,
+                final_unaligned_reads_paths,
+                self._paths.read_alignments_stats_path)
+            self._write_alignment_stat_table()
+            # not actually perform alignment.
+            return
         if not self._args.paired_end:
             # Single end reads
             self._read_files = self._paths.get_read_files()

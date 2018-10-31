@@ -130,6 +130,10 @@ def main():
         "--skip_read_process", default=False, action="store_true",
         help="Skip built in read processing program, and just copy input "
         "reads data files to suitable location.")
+    read_aligning_parser.add_argument(
+        "--regenerate_align_stats", default=False, action="store_true",
+        help="Re-generate read alignment stats according to existing "
+        "alignment outputs, not actually perform alignment.")
     read_aligning_parser.set_defaults(func=align_reads)
 
     # Parameters for coverage file building
