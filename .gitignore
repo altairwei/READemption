@@ -4,3 +4,11 @@ rapl/doc/build/
 # Links for development only
 bin/reademptionlib
 
+# ignore build and install
+dist/
+build/
+READemption.egg-info/
+
+# code editor settings
+.vscode
+

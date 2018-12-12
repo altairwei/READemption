@@ -133,7 +133,9 @@ def main():
     read_aligning_parser.add_argument(
         "--regenerate_align_stats", default=False, action="store_true",
         help="Re-generate read alignment stats according to existing "
-        "alignment outputs, not actually perform alignment.")
+        "alignment outputs, not actually perform alignment. This option"
+        "should be used with -P , if reads are originating from a "
+        "paired-end sequencing.")
     read_aligning_parser.set_defaults(func=align_reads)
 
     # Parameters for coverage file building
